@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Neighborhoods of Los Angeles</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+
+    <script src="GIBSMetadata.js"></script>
+    <script src="GIBSLayer.js"></script>
+
+    <!-- geoJSON -->
+    <script src="geoJSON/Community_Boundaries_(CSA).geojson"></script>
+    <script src="geoJSON/2010_Census_Data_by_Tract.geojson"></script>
+    <script src="geoJSON/Parks_and_Gardens.geojson"></script>
+
+    <!-- Regular JSON -->
+    <script src="geoJSON/museums.json"></script>
+</head>
+<body>
+
+<div id="map-id" style="width: 60vw; height: 60vh;"></div>
+<div>
+    <select id="tile-layer-menu">
+        <option value="relief">Topographical relief</option>
+        <option value="satellite-day">Satellite image (daytime)</option>
+        <option value="satellite-night">Satellite image (nighttime)</option>
+        <option value="light-pollution">Light pollution</option>
+        <option value="road-map">Road map</option>
+    </select>
+</div>
+<div>
+    <select id="bounds-layer-menu">
+        <option value="blank"> Blank </option>
+        <option value="la_communities">Community boundaries</option>
+        <option value="census_data">Population by census tract</option>
+    </select>
+</div>
+<div>
+    <select id="marker-layer-menu">
+        <option value="blank">Blank</option>
+        <option value="museums">Museums in LA County (2016)</option>
+        <option value="parksandgardens">Parks and Gardens</option>
+    </select>
+</div>
+<button id="tile-layer-button">Change map type</button>
+
+<script>
+
+    const map = L.map('map-id').setView([34.0522, -118.2437], 9);
+
+
+    /* TILE LAYERS */
+    const Esri_WorldShadedRelief = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
+        maxZoom: 13
+    }).addTo(map);
+
+    const Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    });
+
+    const NASAGIBS_ViirsEarthAtNight2012 = L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+        attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+        bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+        minZoom: 1,
+        maxZoom: 8,
+        format: 'jpg',
+        time: '',
+        tilematrixset: 'GoogleMapsCompatible_Level'
+    });
+
+    const VIIRS_CityLights_2012 = new L.GIBSLayer('VIIRS_CityLights_2012', {
+        date: new Date('2015/04/01'),
+        transparent: true
+    });
+
+    const Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        subdomains: 'abcd',
+        minZoom: 0,
+        maxZoom: 20,
+        ext: 'png'
+    });
+
+/**************************************************************************************************************/
+    /* BOUNDARY LAYERS */
+    const communities = L.geoJSON(la_communities, {
+        style: function(feature) {
+            return {
+                weight: 1,
+                color: '#33F',
+                fillOpacity: 0.4
+            }
+        },
+        onEachFeature: function(feature, layer) {
+            let label = feature.properties.label;
+            let descrip = '<h4>' + label + '</h4>';
+            layer.bindPopup(descrip);
+        }
+    }).addTo(map);
+
+    const census = L.geoJSON(census_data, {
+        style: function(feature) {
+            return {
+                color: '#F33',
+                weight: 0.5
+            }
+        },
+        onEachFeature(feature, layer) {
+            let population = feature.properties.p0010001;
+            let tractNumber = feature.properties.ct10;
+            let description = '<h3>Tract number : ' + tractNumber + '</h3><div> Population: ' + population + '</div>';
+            //popup.setContent(popup.getContent + description);
+            layer.bindPopup(description);
+
+        }
+    });
+/*************************************************************************************************************/
+    /* MARKER LAYERS */
+
+    var markericon = L.icon({
+        iconUrl : 'icon0.svg',
+        iconSize: [12,12]
+    });
+
+    var geojsonMarkerOptions = {
+        radius: 6,
+        fillColor : '#117800',
+        color: '#000',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 1
+    };
+    // const fillMuseums = function() {
+    //     for (let i = 0; i < museums.data.length; i++) {
+    //         let description = "<h3>" + museums.data[i].name + "</h3><div>" + museums.data[i].details.address + "</div><div>" + museums.data[i].details.city + "</div>";
+    //         L.marker(museums.data[i].latlng, {icon: markericon}).bindPopup(description).addTo(map);
+    //     }
+    // }
+
+    const blankMarkers = L.layerGroup(); //No markers.
+
+
+    const museumMarkers = L.layerGroup();
+    for (let i = 0; i < museums.data.length; i++) {
+        let description = "<h3>" + museums.data[i].name + "</h3><div>" + museums.data[i].details.address + "</div><div>" + museums.data[i].details.city + "</div>";
+        museumMarkers.addLayer(L.marker(museums.data[i].latlng, {icon: markericon}).bindPopup(description));
+    }
+
+
+    const greenspaceMarkers = L.geoJSON(greenspace, {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, geojsonMarkerOptions);
+        },
+        onEachFeature(feature, layer) {
+            layer.bindPopup(feature.properties.name);
+        }
+    });
+
+
+
+/*************************************************************************************************************/
+/*Set Defaults*/
+    var currentTileLayer = Esri_WorldShadedRelief;
+    var currentBoundaryLayer = communities;
+    var currentMarkerLayer = blankMarkers;
+
+    let button = document.getElementById('tile-layer-button');
+    button.onclick = refreshMap;
+
+    function swapTileLayer(newTileLayer) {
+        map.removeLayer(currentTileLayer);
+        map.addLayer(newTileLayer);
+        currentTileLayer = newTileLayer;
+    }
+
+    function swapBoundaryLayer(newBoundaryLayer) {
+        map.removeLayer(currentBoundaryLayer);
+        map.addLayer(newBoundaryLayer);
+        currentBoundaryLayer = newBoundaryLayer;
+    }
+
+    function swapMarkerLayer(newMarkerLayer) {
+        map.removeLayer(currentMarkerLayer);
+        map.addLayer(newMarkerLayer);
+        currentMarkerLayer = newMarkerLayer;
+    }
+
+    function refreshMap() {
+        let tileLayerDropdown = document.getElementById('tile-layer-menu');
+        let boundaryLayerDropdown = document.getElementById('bounds-layer-menu');
+        let markerLayerDropdown = document.getElementById('marker-layer-menu')
+        let mapType = tileLayerDropdown.options[tileLayerDropdown.selectedIndex].value;
+        let boundaryType = boundaryLayerDropdown.options[boundaryLayerDropdown.selectedIndex].value;
+        let markerType = markerLayerDropdown.options[markerLayerDropdown.selectedIndex].value;
+        switch(mapType) {
+            case 'relief':
+                swapTileLayer(Esri_WorldShadedRelief);
+                break;
+            case 'satellite-day':
+                swapTileLayer(Esri_WorldImagery);
+                break;
+            case 'satellite-night':
+                swapTileLayer(NASAGIBS_ViirsEarthAtNight2012);
+                break;
+            case 'light-pollution':
+                swapTileLayer(VIIRS_CityLights_2012);
+                break;
+            case 'road-map':
+                swapTileLayer(Stamen_Toner);
+                break;
+        }
+        switch(boundaryType) {
+            case 'la_communities':
+                swapBoundaryLayer(communities);
+                break;
+            case 'census_data':
+                swapBoundaryLayer(census);
+                break;
+        }
+        switch(markerType) {
+            case 'museums':
+                swapMarkerLayer(museumMarkers);
+                break;
+            case 'parksandgardens':
+                swapMarkerLayer(greenspaceMarkers);
+                break;
+            case 'blank':
+                swapMarkerLayer(blankMarkers);
+                break;
+        }
+    }
+
+</script>
+</body>
+</html>
