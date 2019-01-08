@@ -11,12 +11,17 @@
     <script src="GIBSLayer.js"></script>
 
     <!-- geoJSON -->
-    <script src="geoJSON/Community_Boundaries_(CSA).geojson"></script>
-    <script src="geoJSON/2010_Census_Data_by_Tract.geojson"></script>
-    <script src="geoJSON/Parks_and_Gardens.geojson"></script>
+    <!--<script src="json/Community_Boundaries_(CSA).geojson"></script>-->
+    <!--<script src="json/2010_Census_Data_by_Tract.geojson"></script>-->
+    <!--<script src="json/Parks_and_Gardens.geojson"></script>-->
 
     <!-- Regular JSON -->
-    <script src="geoJSON/museums.json"></script>
+    <!--<script src="json/museums.json"></script>-->
+
+    <script src="fetch.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="index.css" />
+
 </head>
 <body>
 
@@ -31,14 +36,14 @@
     </select>
 </div>
 <div>
-    <select id="bounds-layer-menu">
+    <select id="bounds-layer-menu" onmouseover="console.log(this.id)">
         <option value="blank"> Blank </option>
         <option value="la_communities">Community boundaries</option>
         <option value="census_data">Population by census tract</option>
     </select>
 </div>
 <div>
-    <select id="marker-layer-menu">
+    <select id="marker-layer-menu" onmouseover="console.log(this.id)">
         <option value="blank">Blank</option>
         <option value="museums">Museums in LA County (2016)</option>
         <option value="parksandgardens">Parks and Gardens</option>
@@ -46,7 +51,15 @@
 </div>
 <button id="tile-layer-button">Change map type</button>
 
+<!----------------- FOR TESTING ONLY -------------------->
+
+<br /> <br /> <br />
+<button id="loadfile" onmouseover="loadJSON()">XMLHttpRequest</button>
+<div id="loaded-content"></div>
+
+<!---------------- TESTING SECTION END ----------------->
 <script>
+    museumData.then((d)=>{console.log(d)});
 
     const map = L.map('map-id').setView([34.0522, -118.2437], 9);
 
@@ -83,89 +96,123 @@
         maxZoom: 20,
         ext: 'png'
     });
+/**************************************************************************************************************/
+
+/*
+*
+*   Wrapping the Boundary Layer and Marker Layer sections in an async function
+*   because they rely on JSON data that is loaded asynchronously and must await
+ *  the arrival of those data.
+*
+*
+* /
 
 /**************************************************************************************************************/
     /* BOUNDARY LAYERS */
-    const communities = L.geoJSON(la_communities, {
-        style: function(feature) {
-            return {
-                weight: 1,
-                color: '#33F',
-                fillOpacity: 0.4
-            }
-        },
-        onEachFeature: function(feature, layer) {
-            let label = feature.properties.label;
-            let descrip = '<h4>' + label + '</h4>';
-            layer.bindPopup(descrip);
-        }
-    }).addTo(map);
+    async function asyncBoundaryWrapper()
+    {
 
-    const census = L.geoJSON(census_data, {
-        style: function(feature) {
-            return {
-                color: '#F33',
-                weight: 0.5
-            }
-        },
-        onEachFeature(feature, layer) {
-            let population = feature.properties.p0010001;
-            let tractNumber = feature.properties.ct10;
-            let description = '<h3>Tract number : ' + tractNumber + '</h3><div> Population: ' + population + '</div>';
-            //popup.setContent(popup.getContent + description);
-            layer.bindPopup(description);
+        la_communities = await communityData.then((d)=>{return d});
+        census_data = await censusData.then((d)=>{return d});
 
-        }
-    });
+        const communities = L.geoJSON(await la_communities, {
+            style: function (feature) {
+                return {
+                    weight: 1,
+                    color: '#33F',
+                    fillOpacity: 0.4
+                }
+            },
+            onEachFeature: function (feature, layer) {
+                let label = feature.properties.label;
+                let descrip = '<h4>' + label + '</h4>';
+                layer.bindPopup(descrip);
+            }
+        });
+
+        const census = L.geoJSON(census_data, {
+            style: function (feature) {
+                return {
+                    color: '#F33',
+                    weight: 0.5
+                }
+            },
+            onEachFeature(feature, layer) {
+                let population = feature.properties.p0010001;
+                let tractNumber = feature.properties.ct10;
+                let description = '<h3>Tract number : ' + tractNumber + '</h3><div> Population: ' + population + '</div>';
+                //popup.setContent(popup.getContent + description);
+                layer.bindPopup(description);
+
+            }
+        });
+
+        return {communities, census};
+    }
+    boundaryLayers = asyncBoundaryWrapper();
+    communities = boundaryLayers.communities;
+    communities = boundaryLayers.then((d)=>{return d.communities});
+    census = boundaryLayers.then((d)=>{return d.census});
+
 /*************************************************************************************************************/
     /* MARKER LAYERS */
 
-    var markericon = L.icon({
-        iconUrl : 'icon0.svg',
-        iconSize: [12,12]
-    });
+    async function asyncMarkerWrapper() {
 
-    var geojsonMarkerOptions = {
-        radius: 6,
-        fillColor : '#117800',
-        color: '#000',
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 1
-    };
-    // const fillMuseums = function() {
-    //     for (let i = 0; i < museums.data.length; i++) {
-    //         let description = "<h3>" + museums.data[i].name + "</h3><div>" + museums.data[i].details.address + "</div><div>" + museums.data[i].details.city + "</div>";
-    //         L.marker(museums.data[i].latlng, {icon: markericon}).bindPopup(description).addTo(map);
-    //     }
-    // }
+        museums = await museumData.then((d)=>{return d});
+        greenspace = await greenspaceData.then((d)=>{return d});
 
-    const blankMarkers = L.layerGroup(); //No markers.
+        var markericon = L.icon({
+            iconUrl: 'icon0.svg',
+            iconSize: [12, 12]
+        });
 
-
-    const museumMarkers = L.layerGroup();
-    for (let i = 0; i < museums.data.length; i++) {
-        let description = "<h3>" + museums.data[i].name + "</h3><div>" + museums.data[i].details.address + "</div><div>" + museums.data[i].details.city + "</div>";
-        museumMarkers.addLayer(L.marker(museums.data[i].latlng, {icon: markericon}).bindPopup(description));
-    }
+        var geojsonMarkerOptions = {
+            radius: 6,
+            fillColor: '#117800',
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 1
+        };
+        // const fillMuseums = function() {
+        //     for (let i = 0; i < museums.data.length; i++) {
+        //         let description = "<h3>" + museums.data[i].name + "</h3><div>" + museums.data[i].details.address + "</div><div>" + museums.data[i].details.city + "</div>";
+        //         L.marker(museums.data[i].latlng, {icon: markericon}).bindPopup(description).addTo(map);
+        //     }
+        // }
 
 
-    const greenspaceMarkers = L.geoJSON(greenspace, {
-        pointToLayer: function (feature, latlng) {
-            return L.circleMarker(latlng, geojsonMarkerOptions);
-        },
-        onEachFeature(feature, layer) {
-            layer.bindPopup(feature.properties.name);
+
+        const museumMarkers = L.layerGroup();
+        for (let i = 0; i < museums.data.length; i++) {
+            let description = "<h3>" + museums.data[i].name + "</h3><div>" + museums.data[i].details.address + "</div><div>" + museums.data[i].details.city + "</div>";
+            museumMarkers.addLayer(L.marker(museums.data[i].latlng, {icon: markericon}).bindPopup(description));
         }
-    });
 
 
+        const greenspaceMarkers = L.geoJSON(greenspace, {
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, geojsonMarkerOptions);
+            },
+            onEachFeature(feature, layer) {
+                layer.bindPopup(feature.properties.name);
+            }
+        });
+
+        return {museumMarkers, greenspaceMarkers};
+    }
+    markerLayers = asyncMarkerWrapper();
+
+
+    museumMarkers = markerLayers.then((d)=>{return d.museumMarkers});
+    greenspaceMarkers = markerLayers.then((d)=>{return d.greenspaceMarkers});
 
 /*************************************************************************************************************/
 /*Set Defaults*/
     var currentTileLayer = Esri_WorldShadedRelief;
-    var currentBoundaryLayer = communities;
-    var currentMarkerLayer = blankMarkers;
+    var currentBoundaryLayer = L.layerGroup();
+    var currentMarkerLayer = L.layerGroup();
 
     let button = document.getElementById('tile-layer-button');
     button.onclick = refreshMap;
@@ -188,7 +235,8 @@
         currentMarkerLayer = newMarkerLayer;
     }
 
-    function refreshMap() {
+    //Relies on the JSON fetched asynchronously in fetch.js
+    async function refreshMap() {
         let tileLayerDropdown = document.getElementById('tile-layer-menu');
         let boundaryLayerDropdown = document.getElementById('bounds-layer-menu');
         let markerLayerDropdown = document.getElementById('marker-layer-menu')
@@ -214,24 +262,103 @@
         }
         switch(boundaryType) {
             case 'la_communities':
-                swapBoundaryLayer(communities);
+                swapBoundaryLayer(await communities);
                 break;
             case 'census_data':
-                swapBoundaryLayer(census);
+                swapBoundaryLayer(await census);
+                break;
+            case 'blank':
+                swapBoundaryLayer(L.layerGroup());
                 break;
         }
         switch(markerType) {
             case 'museums':
-                swapMarkerLayer(museumMarkers);
+                swapMarkerLayer(await museumMarkers);
                 break;
             case 'parksandgardens':
-                swapMarkerLayer(greenspaceMarkers);
+                swapMarkerLayer(await greenspaceMarkers);
                 break;
             case 'blank':
-                swapMarkerLayer(blankMarkers);
+                swapMarkerLayer(L.layerGroup());
                 break;
         }
     }
+
+    /*************** FOR TESTING ONLY **********************/
+
+    // function reqListener() {
+    //     console.log(this.responseText);
+    //     document.getElementById('loaded-content').innerText = this.responseText;
+    // }
+    //
+    // function loadFile() {
+    //     var oReq = new XMLHttpRequest();
+    //     oReq.addEventListener('load', reqListener);
+    //     oReq.open('GET', 'http://localhost/testing/hello.txt');
+    //     oReq.send();
+    // }
+    //
+    // var loadedJSON = null;
+    //
+    // function reqAction() {
+    //     loadedJSON = JSON.parse(this.responseText);
+    //     console.log(loadedJSON);
+    //     document.getElementById('loaded-content').innerText = loadedJSON;
+    // }
+    //
+    // function loadJSON() {
+    //     let req = new XMLHttpRequest();
+    //     req.addEventListener('load', reqAction);
+    //     req.open('GET', 'http://localhost/testing/hello.json');
+    //     req.send();
+    // }
+    //
+    // let loadFileButton = document.getElementById('loadfile');
+    // //loadFileButton.type = 'button';
+    // loadFileButton.addEventListener('click', () => {console.log("burpadurp")});
+
+
+    // let prefetchOptions = document.getElementsByClassName('prefetched');
+    // for(let opt in prefetchOptions) {
+    //     opt.addEventListener('mouseover', function(){
+    //         prefetchJSON(opt.value);
+    //     });
+    // }
+    //
+    // function prefetchAction() {
+    //     let prefetchedJSON = JSON.parse(this.responseText);
+    //     document.getElementById('loaded-content').innerText = prefetchedJSON;
+    // }
+    //
+
+    // function prefetchAction() {
+    //     loadedJSON = JSON.parse(this.responseText);
+    //     console.log(loadedJSON);
+    // }
+    //
+    // function prefetchJSON(/*value*/element) {
+    //     console.log(/*value*/element.id);
+    //
+    //     let req = new XMLHttpRequest();
+    //     req.addEventListener('load', prefetchAction)
+    //
+    //     if(element.id = 'bounds-layer-menu') {
+    //         req.open
+    //     }
+    //     if(element.id = 'marker-layer-menu') {
+    //
+    //     }
+    //     // let req = new XMLHttpRequest();
+    //     // req.addEventListener('load', prefetchAction)
+    //     //
+    //     // switch(value){
+    //     //     case 'la_communities':
+    //     //
+    //     //         break;
+    //     // }
+    // }
+
+    /************** TESTING SECTION END ********************/
 
 </script>
 </body>
