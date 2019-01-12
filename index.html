@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
-
+<!--
     <script src="GIBSMetadata.js"></script>
     <script src="GIBSLayer.js"></script>
-
+-->
     <!-- geoJSON -->
     <!--<script src="json/Community_Boundaries_(CSA).geojson"></script>-->
     <!--<script src="json/2010_Census_Data_by_Tract.geojson"></script>-->
@@ -30,20 +30,20 @@
     <select id="tile-layer-menu">
         <option value="relief">Topographical relief</option>
         <option value="satellite-day">Satellite image (daytime)</option>
-        <option value="satellite-night">Satellite image (nighttime)</option>
-        <option value="light-pollution">Light pollution</option>
+        <!--<option value="satellite-night">Satellite image (nighttime)</option>
+        <option value="light-pollution">Light pollution</option> -->
         <option value="road-map">Road map</option>
     </select>
 </div>
 <div>
-    <select id="bounds-layer-menu" onmouseover="console.log(this.id)">
+    <select id="bounds-layer-menu">
         <option value="blank"> Blank </option>
         <option value="la_communities">Community boundaries</option>
         <option value="census_data">Population by census tract</option>
     </select>
 </div>
 <div>
-    <select id="marker-layer-menu" onmouseover="console.log(this.id)">
+    <select id="marker-layer-menu">
         <option value="blank">Blank</option>
         <option value="museums">Museums in LA County (2016)</option>
         <option value="parksandgardens">Parks and Gardens</option>
@@ -52,17 +52,15 @@
 <button id="tile-layer-button">Change map type</button>
 
 <!----------------- FOR TESTING ONLY -------------------->
-
+<!--
 <br /> <br /> <br />
-<button id="loadfile" onmouseover="loadJSON()">XMLHttpRequest</button>
+<button id="loadfile">XMLHttpRequest</button>
 <div id="loaded-content"></div>
-
+-->
 <!---------------- TESTING SECTION END ----------------->
 <script>
-    museumData.then((d)=>{console.log(d)});
 
     const map = L.map('map-id').setView([34.0522, -118.2437], 9);
-
 
     /* TILE LAYERS */
     const Esri_WorldShadedRelief = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', {
@@ -74,7 +72,10 @@
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
     });
 
-    const NASAGIBS_ViirsEarthAtNight2012 = L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+    var Esri_WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+    });
+    /*const NASAGIBS_ViirsEarthAtNight2012 = L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
         attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
         bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
         minZoom: 1,
@@ -87,15 +88,16 @@
     const VIIRS_CityLights_2012 = new L.GIBSLayer('VIIRS_CityLights_2012', {
         date: new Date('2015/04/01'),
         transparent: true
-    });
+    }); */
 
-    const Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
-        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        subdomains: 'abcd',
-        minZoom: 0,
-        maxZoom: 20,
-        ext: 'png'
-    });
+    // const Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
+    //     attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    //     subdomains: 'abcd',
+    //     minZoom: 0,
+    //     maxZoom: 20,
+    //     ext: 'png'
+    // });
+
 /**************************************************************************************************************/
 
 /*
@@ -250,14 +252,14 @@
             case 'satellite-day':
                 swapTileLayer(Esri_WorldImagery);
                 break;
-            case 'satellite-night':
-                swapTileLayer(NASAGIBS_ViirsEarthAtNight2012);
-                break;
-            case 'light-pollution':
-                swapTileLayer(VIIRS_CityLights_2012);
-                break;
+            // case 'satellite-night':
+            //     swapTileLayer(NASAGIBS_ViirsEarthAtNight2012);
+            //     break;
+            // case 'light-pollution':
+            //     swapTileLayer(VIIRS_CityLights_2012);
+            //     break;
             case 'road-map':
-                swapTileLayer(Stamen_Toner);
+                swapTileLayer(Esri_WorldStreetMap);
                 break;
         }
         switch(boundaryType) {
