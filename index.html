@@ -24,33 +24,40 @@
 
 </head>
 <body>
+<header>
 
-<div id="map-id" style="width: 60vw; height: 60vh;"></div>
-<div>
-    <select id="tile-layer-menu">
-        <option value="relief">Topographical relief</option>
-        <option value="satellite-day">Satellite image (daytime)</option>
-        <!--<option value="satellite-night">Satellite image (nighttime)</option>
-        <option value="light-pollution">Light pollution</option> -->
-        <option value="road-map">Road map</option>
-    </select>
-</div>
-<div>
-    <select id="bounds-layer-menu">
-        <option value="blank"> Blank </option>
-        <option value="la_communities">Community boundaries</option>
-        <option value="census_data">Population by census tract</option>
-    </select>
-</div>
-<div>
-    <select id="marker-layer-menu">
-        <option value="blank">Blank</option>
-        <option value="museums">Museums in LA County (2016)</option>
-        <option value="parksandgardens">Parks and Gardens</option>
-    </select>
-</div>
-<button id="tile-layer-button">Change map type</button>
+</header>
 
+<div id="map" style="width: 60vw; height: 60vh;"></div>
+<section id="sidebar">
+    <div id="content"></div>
+</section>
+<div  id="dropdowns">
+    <div>
+        <select id="tile-layer-menu">
+            <option value="relief">Topographical relief</option>
+            <option value="satellite-day">Satellite image (daytime)</option>
+            <!--<option value="satellite-night">Satellite image (nighttime)</option>
+            <option value="light-pollution">Light pollution</option> -->
+            <option value="road-map">Road map</option>
+        </select>
+    </div>
+    <div>
+        <select id="bounds-layer-menu">
+            <option value="blank"> Blank </option>
+            <option value="la_communities">Community boundaries</option>
+            <option value="census_data">Population by census tract</option>
+        </select>
+    </div>
+    <div>
+        <select id="marker-layer-menu">
+            <option value="blank">Blank</option>
+            <option value="museums">Museums in LA County (2016)</option>
+            <option value="parksandgardens">Parks and Gardens</option>
+        </select>
+    </div>
+    <button id="tile-layer-button">Change map type</button>
+</div>
 <!----------------- FOR TESTING ONLY -------------------->
 <!--
 <br /> <br /> <br />
@@ -58,310 +65,13 @@
 <div id="loaded-content"></div>
 -->
 <!---------------- TESTING SECTION END ----------------->
-<script>
-
-    const map = L.map('map-id').setView([34.0522, -118.2437], 9);
-
-    /* TILE LAYERS */
-    const Esri_WorldShadedRelief = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
-        maxZoom: 13
-    }).addTo(map);
-
-    const Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-    });
-
-    var Esri_WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
-    });
-    /*const NASAGIBS_ViirsEarthAtNight2012 = L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
-        attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
-        bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-        minZoom: 1,
-        maxZoom: 8,
-        format: 'jpg',
-        time: '',
-        tilematrixset: 'GoogleMapsCompatible_Level'
-    });
-
-    const VIIRS_CityLights_2012 = new L.GIBSLayer('VIIRS_CityLights_2012', {
-        date: new Date('2015/04/01'),
-        transparent: true
-    }); */
-
-    // const Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
-    //     attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    //     subdomains: 'abcd',
-    //     minZoom: 0,
-    //     maxZoom: 20,
-    //     ext: 'png'
-    // });
-
-/**************************************************************************************************************/
-
-/*
-*
-*   Wrapping the Boundary Layer and Marker Layer sections in an async function
-*   because they rely on JSON data that is loaded asynchronously and must await
- *  the arrival of those data.
-*
-*
-* /
-
-/**************************************************************************************************************/
-    /* BOUNDARY LAYERS */
-    async function asyncBoundaryWrapper()
-    {
-
-        la_communities = await communityData.then((d)=>{return d});
-        census_data = await censusData.then((d)=>{return d});
-
-        const communities = L.geoJSON(await la_communities, {
-            style: function (feature) {
-                return {
-                    weight: 1,
-                    color: '#33F',
-                    fillOpacity: 0.4
-                }
-            },
-            onEachFeature: function (feature, layer) {
-                let label = feature.properties.label;
-                let descrip = '<h4>' + label + '</h4>';
-                layer.bindPopup(descrip);
-            }
-        });
-
-        const census = L.geoJSON(census_data, {
-            style: function (feature) {
-                return {
-                    color: '#F33',
-                    weight: 0.5
-                }
-            },
-            onEachFeature(feature, layer) {
-                let population = feature.properties.p0010001;
-                let tractNumber = feature.properties.ct10;
-                let description = '<h3>Tract number : ' + tractNumber + '</h3><div> Population: ' + population + '</div>';
-                //popup.setContent(popup.getContent + description);
-                layer.bindPopup(description);
-
-            }
-        });
-
-        return {communities, census};
-    }
-    boundaryLayers = asyncBoundaryWrapper();
-    communities = boundaryLayers.communities;
-    communities = boundaryLayers.then((d)=>{return d.communities});
-    census = boundaryLayers.then((d)=>{return d.census});
-
-/*************************************************************************************************************/
-    /* MARKER LAYERS */
-
-    async function asyncMarkerWrapper() {
-
-        museums = await museumData.then((d)=>{return d});
-        greenspace = await greenspaceData.then((d)=>{return d});
-
-        var markericon = L.icon({
-            iconUrl: 'icon0.svg',
-            iconSize: [12, 12]
-        });
-
-        var geojsonMarkerOptions = {
-            radius: 6,
-            fillColor: '#117800',
-            color: '#000',
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 1
-        };
-        // const fillMuseums = function() {
-        //     for (let i = 0; i < museums.data.length; i++) {
-        //         let description = "<h3>" + museums.data[i].name + "</h3><div>" + museums.data[i].details.address + "</div><div>" + museums.data[i].details.city + "</div>";
-        //         L.marker(museums.data[i].latlng, {icon: markericon}).bindPopup(description).addTo(map);
-        //     }
-        // }
 
 
+<footer>
 
-        const museumMarkers = L.layerGroup();
-        for (let i = 0; i < museums.data.length; i++) {
-            let description = "<h3>" + museums.data[i].name + "</h3><div>" + museums.data[i].details.address + "</div><div>" + museums.data[i].details.city + "</div>";
-            museumMarkers.addLayer(L.marker(museums.data[i].latlng, {icon: markericon}).bindPopup(description));
-        }
+</footer>
 
 
-        const greenspaceMarkers = L.geoJSON(greenspace, {
-            pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, geojsonMarkerOptions);
-            },
-            onEachFeature(feature, layer) {
-                layer.bindPopup(feature.properties.name);
-            }
-        });
-
-        return {museumMarkers, greenspaceMarkers};
-    }
-    markerLayers = asyncMarkerWrapper();
-
-
-    museumMarkers = markerLayers.then((d)=>{return d.museumMarkers});
-    greenspaceMarkers = markerLayers.then((d)=>{return d.greenspaceMarkers});
-
-/*************************************************************************************************************/
-/*Set Defaults*/
-    var currentTileLayer = Esri_WorldShadedRelief;
-    var currentBoundaryLayer = L.layerGroup();
-    var currentMarkerLayer = L.layerGroup();
-
-    let button = document.getElementById('tile-layer-button');
-    button.onclick = refreshMap;
-
-    function swapTileLayer(newTileLayer) {
-        map.removeLayer(currentTileLayer);
-        map.addLayer(newTileLayer);
-        currentTileLayer = newTileLayer;
-    }
-
-    function swapBoundaryLayer(newBoundaryLayer) {
-        map.removeLayer(currentBoundaryLayer);
-        map.addLayer(newBoundaryLayer);
-        currentBoundaryLayer = newBoundaryLayer;
-    }
-
-    function swapMarkerLayer(newMarkerLayer) {
-        map.removeLayer(currentMarkerLayer);
-        map.addLayer(newMarkerLayer);
-        currentMarkerLayer = newMarkerLayer;
-    }
-
-    //Relies on the JSON fetched asynchronously in fetch.js
-    async function refreshMap() {
-        let tileLayerDropdown = document.getElementById('tile-layer-menu');
-        let boundaryLayerDropdown = document.getElementById('bounds-layer-menu');
-        let markerLayerDropdown = document.getElementById('marker-layer-menu')
-        let mapType = tileLayerDropdown.options[tileLayerDropdown.selectedIndex].value;
-        let boundaryType = boundaryLayerDropdown.options[boundaryLayerDropdown.selectedIndex].value;
-        let markerType = markerLayerDropdown.options[markerLayerDropdown.selectedIndex].value;
-        switch(mapType) {
-            case 'relief':
-                swapTileLayer(Esri_WorldShadedRelief);
-                break;
-            case 'satellite-day':
-                swapTileLayer(Esri_WorldImagery);
-                break;
-            // case 'satellite-night':
-            //     swapTileLayer(NASAGIBS_ViirsEarthAtNight2012);
-            //     break;
-            // case 'light-pollution':
-            //     swapTileLayer(VIIRS_CityLights_2012);
-            //     break;
-            case 'road-map':
-                swapTileLayer(Esri_WorldStreetMap);
-                break;
-        }
-        switch(boundaryType) {
-            case 'la_communities':
-                swapBoundaryLayer(await communities);
-                break;
-            case 'census_data':
-                swapBoundaryLayer(await census);
-                break;
-            case 'blank':
-                swapBoundaryLayer(L.layerGroup());
-                break;
-        }
-        switch(markerType) {
-            case 'museums':
-                swapMarkerLayer(await museumMarkers);
-                break;
-            case 'parksandgardens':
-                swapMarkerLayer(await greenspaceMarkers);
-                break;
-            case 'blank':
-                swapMarkerLayer(L.layerGroup());
-                break;
-        }
-    }
-
-    /*************** FOR TESTING ONLY **********************/
-
-    // function reqListener() {
-    //     console.log(this.responseText);
-    //     document.getElementById('loaded-content').innerText = this.responseText;
-    // }
-    //
-    // function loadFile() {
-    //     var oReq = new XMLHttpRequest();
-    //     oReq.addEventListener('load', reqListener);
-    //     oReq.open('GET', 'http://localhost/testing/hello.txt');
-    //     oReq.send();
-    // }
-    //
-    // var loadedJSON = null;
-    //
-    // function reqAction() {
-    //     loadedJSON = JSON.parse(this.responseText);
-    //     console.log(loadedJSON);
-    //     document.getElementById('loaded-content').innerText = loadedJSON;
-    // }
-    //
-    // function loadJSON() {
-    //     let req = new XMLHttpRequest();
-    //     req.addEventListener('load', reqAction);
-    //     req.open('GET', 'http://localhost/testing/hello.json');
-    //     req.send();
-    // }
-    //
-    // let loadFileButton = document.getElementById('loadfile');
-    // //loadFileButton.type = 'button';
-    // loadFileButton.addEventListener('click', () => {console.log("burpadurp")});
-
-
-    // let prefetchOptions = document.getElementsByClassName('prefetched');
-    // for(let opt in prefetchOptions) {
-    //     opt.addEventListener('mouseover', function(){
-    //         prefetchJSON(opt.value);
-    //     });
-    // }
-    //
-    // function prefetchAction() {
-    //     let prefetchedJSON = JSON.parse(this.responseText);
-    //     document.getElementById('loaded-content').innerText = prefetchedJSON;
-    // }
-    //
-
-    // function prefetchAction() {
-    //     loadedJSON = JSON.parse(this.responseText);
-    //     console.log(loadedJSON);
-    // }
-    //
-    // function prefetchJSON(/*value*/element) {
-    //     console.log(/*value*/element.id);
-    //
-    //     let req = new XMLHttpRequest();
-    //     req.addEventListener('load', prefetchAction)
-    //
-    //     if(element.id = 'bounds-layer-menu') {
-    //         req.open
-    //     }
-    //     if(element.id = 'marker-layer-menu') {
-    //
-    //     }
-    //     // let req = new XMLHttpRequest();
-    //     // req.addEventListener('load', prefetchAction)
-    //     //
-    //     // switch(value){
-    //     //     case 'la_communities':
-    //     //
-    //     //         break;
-    //     // }
-    // }
-
-    /************** TESTING SECTION END ********************/
-
-</script>
+<script src="map.js" type="text/javascript"></script>
 </body>
 </html>
