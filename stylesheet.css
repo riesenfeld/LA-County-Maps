@@ -152,7 +152,7 @@ header #project-name{
 }
 
 #about-text-area {
-    margin: 8vh 4vw 4vh 4vw;
+    margin: 6vh 4vw 4vh 4vw;
     height: 80%;
     /*background-color: var(--bgcolor-dark);*/
     color: var(--textcolor);
@@ -162,4 +162,8 @@ header #project-name{
 #about-text-area a {
     text-decoration: unset;
     color: var(--linkhovercolor);
+}
+
+#about-text-spacer {
+    height: 2vh;
 }
