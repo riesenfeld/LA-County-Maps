@@ -1,9 +1,9 @@
 :root {
     /*--bgcolor-dark: #224;*/
-    --bgcolor-light: #FEE;
+    --bgcolor-light: #FDD;
     --bgcolor-darkest: #337;
     --bgcolor-dark: #44A;
-    --textcolor: #A73;
+    --textcolor: #C95;
     --linkhovercolor: #3A5;
     --fontsize: 1.15rem;
 }
@@ -152,7 +152,7 @@ header #project-name{
 }
 
 #about-text-area {
-    margin: 4vh 4vw 4vh 4vw;
+    margin: 8vh 4vw 4vh 4vw;
     height: 80%;
     /*background-color: var(--bgcolor-dark);*/
     color: var(--textcolor);
