@@ -14,28 +14,6 @@ const Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/re
 var Esri_WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
 });
-/*const NASAGIBS_ViirsEarthAtNight2012 = L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
-    attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
-    bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-    minZoom: 1,
-    maxZoom: 8,
-    format: 'jpg',
-    time: '',
-    tilematrixset: 'GoogleMapsCompatible_Level'
-});
-
-const VIIRS_CityLights_2012 = new L.GIBSLayer('VIIRS_CityLights_2012', {
-    date: new Date('2015/04/01'),
-    transparent: true
-}); */
-
-// const Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
-//     attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-//     subdomains: 'abcd',
-//     minZoom: 0,
-//     maxZoom: 20,
-//     ext: 'png'
-// });
 
 /**************************************************************************************************************/
 
@@ -67,7 +45,6 @@ async function asyncBoundaryWrapper()
         onEachFeature: function (feature, layer) {
             let label = feature.properties.label;
             let descrip = '<h4>' + label + '</h4>';
-            //layer.bindPopup(descrip);
         }
     });
 
@@ -82,8 +59,6 @@ async function asyncBoundaryWrapper()
             let population = feature.properties.p0010001;
             let tractNumber = feature.properties.ct10;
             let description = '<h3>Tract number : ' + tractNumber + '</h3><div> Population: ' + population + '</div>';
-            //popup.setContent(popup.getContent + description);
-            //layer.bindPopup(description);
 
         }
     });
@@ -153,19 +128,11 @@ async function asyncMarkerWrapper() {
         opacity: 1,
         fillOpacity: 1
     };
-    // const fillMuseums = function() {
-    //     for (let i = 0; i < museums.data.length; i++) {
-    //         let description = "<h3>" + museums.data[i].name + "</h3><div>" + museums.data[i].details.address + "</div><div>" + museums.data[i].details.city + "</div>";
-    //         L.marker(museums.data[i].latlng, {icon: markericon}).bindPopup(description).addTo(map);
-    //     }
-    // }
-
-
 
     const museumMarkers = L.layerGroup();
     for (let i = 0; i < museums.data.length; i++) {
         let description = "<h3>" + museums.data[i].name + "</h3><div>" + museums.data[i].details.address + "</div><div>" + museums.data[i].details.city + "</div>";
-        let layer = L.marker(museums.data[i].latlng, {icon: markericon})/*.bindPopup(description)*/;
+        let layer = L.marker(museums.data[i].latlng, {icon: markericon});
         museumMarkers.addLayer(layer);
 
         /* Add event handler on each Marker in the LayerGroup*/
@@ -181,7 +148,7 @@ async function asyncMarkerWrapper() {
             return L.circleMarker(latlng, geojsonMarkerOptions);
         },
         onEachFeature(feature, layer) {
-            //layer.bindPopup(feature.properties.name);
+
         }
     });
 
@@ -206,7 +173,6 @@ async function asyncMarkerWrapper() {
     return {museumMarkers, greenspaceMarkers};
 }
 markerLayers = asyncMarkerWrapper();
-
 
 museumMarkers = markerLayers.then((d)=>{return d.museumMarkers});
 greenspaceMarkers = markerLayers.then((d)=>{return d.greenspaceMarkers});
@@ -253,12 +219,6 @@ async function refreshMap() {
         case 'satellite-day':
             swapTileLayer(Esri_WorldImagery);
             break;
-        // case 'satellite-night':
-        //     swapTileLayer(NASAGIBS_ViirsEarthAtNight2012);
-        //     break;
-        // case 'light-pollution':
-        //     swapTileLayer(VIIRS_CityLights_2012);
-        //     break;
         case 'road-map':
             swapTileLayer(Esri_WorldStreetMap);
             break;
@@ -286,79 +246,3 @@ async function refreshMap() {
             break;
     }
 }
-
-/*************** FOR TESTING ONLY **********************/
-
-// function reqListener() {
-//     console.log(this.responseText);
-//     document.getElementById('loaded-content').innerText = this.responseText;
-// }
-//
-// function loadFile() {
-//     var oReq = new XMLHttpRequest();
-//     oReq.addEventListener('load', reqListener);
-//     oReq.open('GET', 'http://localhost/testing/hello.txt');
-//     oReq.send();
-// }
-//
-// var loadedJSON = null;
-//
-// function reqAction() {
-//     loadedJSON = JSON.parse(this.responseText);
-//     console.log(loadedJSON);
-//     document.getElementById('loaded-content').innerText = loadedJSON;
-// }
-//
-// function loadJSON() {
-//     let req = new XMLHttpRequest();
-//     req.addEventListener('load', reqAction);
-//     req.open('GET', 'http://localhost/testing/hello.json');
-//     req.send();
-// }
-//
-// let loadFileButton = document.getElementById('loadfile');
-// //loadFileButton.type = 'button';
-// loadFileButton.addEventListener('click', () => {console.log("burpadurp")});
-
-
-// let prefetchOptions = document.getElementsByClassName('prefetched');
-// for(let opt in prefetchOptions) {
-//     opt.addEventListener('mouseover', function(){
-//         prefetchJSON(opt.value);
-//     });
-// }
-//
-// function prefetchAction() {
-//     let prefetchedJSON = JSON.parse(this.responseText);
-//     document.getElementById('loaded-content').innerText = prefetchedJSON;
-// }
-//
-
-// function prefetchAction() {
-//     loadedJSON = JSON.parse(this.responseText);
-//     console.log(loadedJSON);
-// }
-//
-// function prefetchJSON(/*value*/element) {
-//     console.log(/*value*/element.id);
-//
-//     let req = new XMLHttpRequest();
-//     req.addEventListener('load', prefetchAction)
-//
-//     if(element.id = 'bounds-layer-menu') {
-//         req.open
-//     }
-//     if(element.id = 'marker-layer-menu') {
-//
-//     }
-//     // let req = new XMLHttpRequest();
-//     // req.addEventListener('load', prefetchAction)
-//     //
-//     // switch(value){
-//     //     case 'la_communities':
-//     //
-//     //         break;
-//     // }
-// }
-
-/************** TESTING SECTION END ********************/

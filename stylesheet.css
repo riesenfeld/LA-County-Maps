@@ -1,5 +1,4 @@
 :root {
-    /*--bgcolor-dark: #224;*/
     --bgcolor-light: #FDD;
     --bgcolor-darkest: #337;
     --bgcolor-dark: #44A;
@@ -14,7 +13,6 @@
     border: 0;
     font-size: 100%;
     font-family: Arial;
-    /*position: relative;*/
 }
 
 body {
@@ -70,17 +68,12 @@ header #project-name{
 }
 
 #map {
-    /*float: left;*/
-    /*width: 70vw;*/
     height: 80vh;
     box-shadow: 0.25vw 0.25vw 0.25vw #222;
     border: 1px solid #999;
 }
 
 #sidebar {
-    /*float: left;*/
-    /*width: 37.75vw;*/
-    /*width: 27.951vw;*/
     height: 80vh;
     background-color: var(--bgcolor-darkest);
     box-shadow: 0.25vw 0.25vw 0.25vw #222;
@@ -106,8 +99,6 @@ header #project-name{
 
 #dropdowns {
     height: 35vh;
-    /*position: absolute;*/
-    /*top: 70vh;*/
     background-color: var(--bgcolor-dark);
     /*opacity: 0.5;*/
     display: flex;
@@ -136,6 +127,11 @@ header #project-name{
 /***********************************************************
                         ABOUT PAGE
 ********************************************************** */
+
+#project-name a {
+    text-decoration: unset;
+    color: var(--textcolor);
+}
 
 #about-container {
     width: 99.5vw;
