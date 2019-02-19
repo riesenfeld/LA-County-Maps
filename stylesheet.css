@@ -1,0 +1,165 @@
+:root {
+    /*--bgcolor-dark: #224;*/
+    --bgcolor-light: #FEE;
+    --bgcolor-darkest: #337;
+    --bgcolor-dark: #44A;
+    --textcolor: #A73;
+    --linkhovercolor: #3A5;
+    --fontsize: 1.15rem;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-family: Arial;
+    /*position: relative;*/
+}
+
+body {
+    background-color: var(--bgcolor-light);
+}
+
+header {
+    width: 100vw;
+    height: 10vh;
+    background-color: var(--bgcolor-darkest);
+    color: var(--textcolor);
+    font-size: var(--fontsize);
+    margin-bottom: 5vh;
+
+    display: flex;
+    justify-content: space-evenly;
+}
+
+header #project-name{
+    align-self: center;
+    font-size: 1.8rem;
+}
+
+#header-spacer {
+    width: 35vw;
+}
+
+#header-flex-wrapper {
+    width: 40vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#header-flex-wrapper > a {
+    text-decoration: unset;
+    color: var(--textcolor);
+    align-self: center;
+}
+
+#header-flex-wrapper a:hover {
+    color: var(--linkhovercolor);
+}
+
+#container {
+    display: grid;
+    grid-template-columns: 1fr 16fr 8fr 1fr;
+    grid-column-gap: 0.5vw;
+}
+
+.grid-item {
+
+}
+
+#map {
+    /*float: left;*/
+    /*width: 70vw;*/
+    height: 80vh;
+    box-shadow: 0.25vw 0.25vw 0.25vw #222;
+    border: 1px solid #999;
+}
+
+#sidebar {
+    /*float: left;*/
+    /*width: 37.75vw;*/
+    /*width: 27.951vw;*/
+    height: 80vh;
+    background-color: var(--bgcolor-darkest);
+    box-shadow: 0.25vw 0.25vw 0.25vw #222;
+    border: 1px solid #999
+}
+
+#content-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#content {
+    height: 45vh;
+    background-color: var(--bgcolor-darkest);
+    color: var(--textcolor);
+    font-size: 100%;
+    /*line-height: 1rem;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#dropdowns {
+    height: 35vh;
+    /*position: absolute;*/
+    /*top: 70vh;*/
+    background-color: var(--bgcolor-dark);
+    /*opacity: 0.5;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: left;
+}
+
+#dropdowns div select {
+    box-shadow: 0.25vw 0.25vw 0.25vw #222;
+    border: 1px solid #999;
+    width: 28vw;
+}
+
+#dropdowns button {
+    box-shadow: 0.25vw 0.25vw 0.25vw #222;
+    border: 1px solid #999;
+    width: 20vw;
+}
+
+.gutter {
+    background-color: var(--bgcolor-light);
+}
+
+
+/***********************************************************
+                        ABOUT PAGE
+********************************************************** */
+
+#about-container {
+    width: 99.5vw;
+    height: 80vh;
+    display: grid;
+    justify-content: center;
+    grid-template-rows: 1fr 8fr 4fr;
+    grid-template-columns: 1fr 2fr 1fr;
+}
+
+#about-content {
+    background-color: var(--bgcolor-darkest);
+    box-shadow: 0.25vw 0.25vw 0.25vw #222;
+}
+
+#about-text-area {
+    margin: 4vh 4vw 4vh 4vw;
+    height: 80%;
+    /*background-color: var(--bgcolor-dark);*/
+    color: var(--textcolor);
+    font-size: 1.2rem;
+}
+
+#about-text-area a {
+    text-decoration: unset;
+    color: var(--linkhovercolor);
+}

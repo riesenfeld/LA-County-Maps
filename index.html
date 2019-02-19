@@ -4,6 +4,8 @@
     <title>Neighborhoods of Los Angeles</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Aron Riesenfeld">
+    <meta name="description" content="A LeafletJS Project">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
 <!--
@@ -20,43 +22,52 @@
 
     <script src="fetch.js"></script>
     <!-- CSS -->
-    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="stylesheet.css" />
 
 </head>
 <body>
 <header>
-
+    <div id="project-name"><h3>Mapping LA County</h3></div>
+    <div id="header-spacer"></div>
+    <div id="header-flex-wrapper">
+        <a href="about.html"><strong>About</strong></a>
+        <!--<a href="#"><strong>Stuff</strong></a>-->
+        <a href="https://aronriesenfeld.com"><strong>My Website</strong></a>
+    </div>
 </header>
-
-<div id="map" style="width: 60vw; height: 60vh;"></div>
-<section id="sidebar">
-    <div id="content"></div>
-</section>
-<div  id="dropdowns">
-    <div>
-        <select id="tile-layer-menu">
-            <option value="relief">Topographical relief</option>
-            <option value="satellite-day">Satellite image (daytime)</option>
-            <!--<option value="satellite-night">Satellite image (nighttime)</option>
-            <option value="light-pollution">Light pollution</option> -->
-            <option value="road-map">Road map</option>
-        </select>
-    </div>
-    <div>
-        <select id="bounds-layer-menu">
-            <option value="blank"> Blank </option>
-            <option value="la_communities">Community boundaries</option>
-            <option value="census_data">Population by census tract</option>
-        </select>
-    </div>
-    <div>
-        <select id="marker-layer-menu">
-            <option value="blank">Blank</option>
-            <option value="museums">Museums in LA County (2016)</option>
-            <option value="parksandgardens">Parks and Gardens</option>
-        </select>
-    </div>
-    <button id="tile-layer-button">Change map type</button>
+<div id="container">
+    <div class="gutter" id="left-gutter"></div>
+    <div id="map" class="grid-item"></div>
+    <section id="sidebar" class="grid-item">
+        <div id="content-wrapper"><div id="content"></div></div>
+        <div id="dropdowns">
+            <div>
+                <select id="tile-layer-menu">
+                    <option value="relief">Topographical relief</option>
+                    <option value="satellite-day">Satellite image (daytime)</option>
+                    <!--<option value="satellite-night">Satellite image (nighttime)</option>
+                    <option value="light-pollution">Light pollution</option> -->
+                    <option value="road-map">Road map</option>
+                </select>
+            </div>
+            <div>
+                <select id="bounds-layer-menu">
+                    <option value="blank"> Blank </option>
+                    <option value="la_communities">Community boundaries</option>
+                    <option value="census_data">Population by census tract</option>
+                </select>
+            </div>
+            <div>
+                <select id="marker-layer-menu">
+                    <option value="blank">Blank</option>
+                    <option value="museums">Museums in LA County (2016)</option>
+                    <option value="parksandgardens">Parks and Gardens</option>
+                </select>
+            </div>
+            <button id="tile-layer-button">Change map type</button>
+        </div>
+    </section>
+    <div class="gutter" id="right-gutter"></div>
 </div>
 <!----------------- FOR TESTING ONLY -------------------->
 <!--

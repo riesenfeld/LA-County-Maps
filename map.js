@@ -67,7 +67,7 @@ async function asyncBoundaryWrapper()
         onEachFeature: function (feature, layer) {
             let label = feature.properties.label;
             let descrip = '<h4>' + label + '</h4>';
-            layer.bindPopup(descrip);
+            //layer.bindPopup(descrip);
         }
     });
 
@@ -83,7 +83,7 @@ async function asyncBoundaryWrapper()
             let tractNumber = feature.properties.ct10;
             let description = '<h3>Tract number : ' + tractNumber + '</h3><div> Population: ' + population + '</div>';
             //popup.setContent(popup.getContent + description);
-            layer.bindPopup(description);
+            //layer.bindPopup(description);
 
         }
     });
@@ -165,7 +165,7 @@ async function asyncMarkerWrapper() {
     const museumMarkers = L.layerGroup();
     for (let i = 0; i < museums.data.length; i++) {
         let description = "<h3>" + museums.data[i].name + "</h3><div>" + museums.data[i].details.address + "</div><div>" + museums.data[i].details.city + "</div>";
-        let layer = L.marker(museums.data[i].latlng, {icon: markericon}).bindPopup(description);
+        let layer = L.marker(museums.data[i].latlng, {icon: markericon})/*.bindPopup(description)*/;
         museumMarkers.addLayer(layer);
 
         /* Add event handler on each Marker in the LayerGroup*/
@@ -181,7 +181,7 @@ async function asyncMarkerWrapper() {
             return L.circleMarker(latlng, geojsonMarkerOptions);
         },
         onEachFeature(feature, layer) {
-            layer.bindPopup(feature.properties.name);
+            //layer.bindPopup(feature.properties.name);
         }
     });
 
