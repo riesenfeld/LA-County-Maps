@@ -224,7 +224,7 @@ header #project-name {
 
 #project-name a {
   text-decoration: unset;
-  color: var(--textcolor);
+  color: var(--textcolor-light);
 }
 
 #about-container {
@@ -232,21 +232,23 @@ header #project-name {
   height: 80vh;
   display: grid;
   justify-content: center;
-  grid-template-rows: 1fr 8fr 4fr;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: 1fr 8fr 1fr;
+  grid-template-columns: 1fr 6fr 1fr;
 }
 
-#about-content {
+/* #about-content {
   background-color: var(--bgcolor-darkest);
-  /* box-shadow: 0.25vw 0.25vw 0.25vw #222; */
-}
+} */
 
 #about-text-area {
   margin: 6vh 4vw 4vh 4vw;
   height: 80%;
-  /*background-color: var(--bgcolor-dark);*/
   color: var(--textcolor);
   font-size: 1.2rem;
+}
+
+#about-text-area p {
+  margin-bottom: 1vh;
 }
 
 #about-text-area a {
@@ -255,5 +257,5 @@ header #project-name {
 }
 
 #about-text-spacer {
-  height: 2vh;
+  height: 4vh;
 }
