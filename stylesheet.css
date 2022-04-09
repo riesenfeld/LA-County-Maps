@@ -183,6 +183,7 @@ header #project-name {
   #dropdowns-centering-box div {
     display: flex;
     flex-direction: column;
+    width: 201px;
   }
   #dropdowns-centering-box div select {
     border: 1px solid #999;
@@ -213,6 +214,24 @@ header #project-name {
   }
   header #project-name {
     font-size: 5vw;
+  }
+  #dropdowns-centering-box {
+    width: 90%;
+  }
+  #dropdowns-centering-box div {
+    width: 100%;
+  }
+  #dropdowns-centering-box div label {
+    width: fit-content;
+    font-size: 3vw;
+  }
+  #dropdowns-centering-box div select {
+    width: 100%;
+    margin-top: 5px;
+    font-size: 3vw;
+  }
+  #content {
+    font-size: 4vw;
   }
 }
 /***********************************************************
