@@ -1,8 +1,9 @@
 :root {
-  --bgcolor-light: #fdd;
+  --bgcolor-light: #f2f2f2;
   --bgcolor-darkest: #337;
   --bgcolor-dark: #44a;
-  --textcolor: #c95;
+  --textcolor: #090909;
+  --textcolor-light: #cccc66;
   --linkhovercolor: #3a5;
   --fontsize: 1.15rem;
 }
@@ -13,6 +14,7 @@
   border: 0;
   font-size: 100%;
   font-family: Arial;
+  font-weight: normal;
 }
 
 body {
@@ -23,7 +25,7 @@ header {
   width: 100vw;
   height: 10vh;
   background-color: var(--bgcolor-darkest);
-  color: var(--textcolor);
+  color: var(--textcolor-light);
   font-size: var(--fontsize);
   margin-bottom: 5vh;
 
@@ -36,9 +38,9 @@ header #project-name {
   font-size: 1.8rem;
 }
 
-#header-spacer {
+/* #header-spacer {
   width: 35vw;
-}
+} */
 
 #header-flex-wrapper {
   width: 40vw;
@@ -49,7 +51,7 @@ header #project-name {
 
 #header-flex-wrapper > a {
   text-decoration: unset;
-  color: var(--textcolor);
+  color: var(--textcolor-light);
   align-self: center;
 }
 
@@ -63,19 +65,19 @@ header #project-name {
   grid-column-gap: 0.5vw;
 }
 
-.grid-item {
-}
+/* .grid-item {
+} */
 
 #map {
   height: 80vh;
-  box-shadow: 0.25vw 0.25vw 0.25vw #222;
+  /* box-shadow: 0.25vw 0.25vw 0.25vw #222; */
   border: 1px solid #999;
 }
 
 #sidebar {
   height: 80vh;
-  background-color: var(--bgcolor-darkest);
-  box-shadow: 0.25vw 0.25vw 0.25vw #222;
+  background-color: var(--bgcolor-light);
+  /* box-shadow: 0.25vw 0.25vw 0.25vw #222; */
   border: 1px solid #999;
 }
 
@@ -83,11 +85,12 @@ header #project-name {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  border-bottom: 1px solid #999;
 }
 
 #content {
   height: 45vh;
-  background-color: var(--bgcolor-darkest);
+  background-color: var(--bgcolor-light);
   color: var(--textcolor);
   font-size: 100%;
   /*line-height: 1rem;*/
@@ -98,7 +101,7 @@ header #project-name {
 
 #dropdowns {
   height: 35vh;
-  background-color: var(--bgcolor-dark);
+  background-color: var(--bgcolor-light);
   /*opacity: 0.5;*/
   display: flex;
   flex-direction: column;
@@ -107,17 +110,26 @@ header #project-name {
 }
 
 #dropdowns div select {
-  box-shadow: 0.25vw 0.25vw 0.25vw #222;
+  /* box-shadow: 0.25vw 0.25vw 0.25vw #222; */
   border: 1px solid #999;
   width: 28vw;
 }
 
 #dropdowns button {
-  box-shadow: 0.25vw 0.25vw 0.25vw #222;
   border: 1px solid #999;
-  width: 20vw;
+  width: fit-content;
+  color: var(--textcolor-light);
+  background-color: var(--bgcolor-darkest);
+  padding: 3px 5px 3px 5px;
+  border-radius: 3px;
+  box-shadow: 1px 1px 1px #999;
 }
 
+#dropdowns button:active {
+  box-shadow: none;
+  margin-top: 1px;
+  margin-bottom: -1px;
+}
 .gutter {
   background-color: var(--bgcolor-light);
 }
@@ -142,7 +154,7 @@ header #project-name {
 
 #about-content {
   background-color: var(--bgcolor-darkest);
-  box-shadow: 0.25vw 0.25vw 0.25vw #222;
+  /* box-shadow: 0.25vw 0.25vw 0.25vw #222; */
 }
 
 #about-text-area {
@@ -160,4 +172,65 @@ header #project-name {
 
 #about-text-spacer {
   height: 2vh;
+}
+
+@media (max-width: 780px) {
+  #container {
+    display: flex;
+    flex-direction: column;
+  }
+  #left-gutter {
+    display: none;
+  }
+  #right-gutter {
+    display: none;
+  }
+  #map {
+    height: 50vh;
+    width: 90vw;
+    margin-left: 5vw;
+  }
+  #sidebar {
+    display: flex;
+    flex-direction: row-reverse;
+    height: 30vh;
+    width: 90vw;
+    margin-left: 5vw;
+    font-size: 80%;
+  }
+  #dropdowns {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #dropdowns-centering-box {
+    width: auto;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  #dropdowns-centering-box div {
+    display: flex;
+    flex-direction: column;
+  }
+  #dropdowns-centering-box button {
+    font-size: 120%;
+  }
+  #content-wrapper {
+    width: 50%;
+    border-left: 1px solid #999;
+    border-bottom: none;
+  }
+  #content {
+    height: 100%;
+    background-color: var(--bgcolor-light);
+    color: var(--textcolor);
+    font-size: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
