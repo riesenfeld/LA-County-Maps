@@ -86,6 +86,7 @@ header a {
 
 #content {
   height: 100%;
+  width: 90%;
   background-color: var(--bgcolor-light);
   color: var(--textcolor);
   display: flex;
@@ -140,7 +141,7 @@ header a {
   background-color: var(--bgcolor-light);
 }
 
-@media (max-width: 780px) {
+@media (orientation: portrait) and (max-width: 780px) {
   /* header {
     font-size: 90%;
   } */
@@ -212,7 +213,7 @@ header a {
     justify-content: center;
   }
 }
-@media (max-width: 500px) {
+@media (orientation: portrait) and (max-width: 500px) {
   header {
     font-size: 4vw;
   }
@@ -236,6 +237,58 @@ header a {
   }
   #content {
     font-size: min(4vw, 90%);
+  }
+}
+@media (orientation: portrait) and (max-height: 510px) {
+  #content {
+    font-size: 70%;
+  }
+}
+@media (orientation: landscape) and (max-height: 510px) {
+  #dropdowns-centering-box {
+    height: 90%;
+  }
+  #dropdowns-centering-box div label,
+  #dropdowns-centering-box div select,
+  #dropdowns-centering-box button {
+    font-size: 80%;
+  }
+  #content {
+    font-size: 70%;
+  }
+}
+@media (orientation: landscape) and (max-height: 400px) {
+  #dropdowns {
+    justify-content: flex-start;
+  }
+  #dropdowns-centering-box {
+    height: 95%;
+    justify-content: space-evenly;
+  }
+  #dropdowns-centering-box div label,
+  #dropdowns-centering-box div select,
+  #dropdowns-centering-box button {
+    font-size: 3vh;
+  }
+  #dropdowns-centering-box div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  #dropdowns-centering-box div select {
+    margin: 0px;
+  }
+  #dropdowns-centering-box button {
+    margin-top: 4px;
+    padding: 2px 4px 2px 4px;
+  }
+  #dropdowns-centering-box button:active {
+    box-shadow: none;
+    margin-top: 5px;
+    margin-bottom: -1px;
+  }
+  #content {
+    font-size: 3vh;
   }
 }
 /***********************************************************
