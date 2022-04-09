@@ -137,6 +137,12 @@ header #project-name {
 }
 
 @media (max-width: 780px) {
+  /* header {
+    font-size: 90%;
+  } */
+  header #project-name {
+    font-size: 1.6rem;
+  }
   #container {
     display: flex;
     flex-direction: column;
@@ -201,7 +207,14 @@ header #project-name {
     justify-content: center;
   }
 }
-
+@media (max-width: 500px) {
+  header {
+    font-size: 4vw;
+  }
+  header #project-name {
+    font-size: 5vw;
+  }
+}
 /***********************************************************
                         ABOUT PAGE
 ********************************************************** */
@@ -220,9 +233,15 @@ header #project-name {
   grid-template-columns: 1fr 6fr 1fr;
 }
 
+#about-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #about-text-area {
-  margin: 6vh 4vw 4vh 4vw;
-  height: 80%;
+  width: 80vw;
+  max-width: 620px;
   color: var(--textcolor);
   font-size: 1.2rem;
 }
