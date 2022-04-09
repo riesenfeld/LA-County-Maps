@@ -90,7 +90,7 @@ header #project-name {
 }
 
 #content {
-  height: 45vh;
+  height: 100%;
   background-color: var(--bgcolor-light);
   color: var(--textcolor);
   font-size: 100%;
@@ -149,46 +149,6 @@ header #project-name {
 }
 .gutter {
   background-color: var(--bgcolor-light);
-}
-
-/***********************************************************
-                        ABOUT PAGE
-********************************************************** */
-
-#project-name a {
-  text-decoration: unset;
-  color: var(--textcolor);
-}
-
-#about-container {
-  width: 99.5vw;
-  height: 80vh;
-  display: grid;
-  justify-content: center;
-  grid-template-rows: 1fr 8fr 4fr;
-  grid-template-columns: 1fr 2fr 1fr;
-}
-
-#about-content {
-  background-color: var(--bgcolor-darkest);
-  /* box-shadow: 0.25vw 0.25vw 0.25vw #222; */
-}
-
-#about-text-area {
-  margin: 6vh 4vw 4vh 4vw;
-  height: 80%;
-  /*background-color: var(--bgcolor-dark);*/
-  color: var(--textcolor);
-  font-size: 1.2rem;
-}
-
-#about-text-area a {
-  text-decoration: unset;
-  color: var(--linkhovercolor);
-}
-
-#about-text-spacer {
-  height: 2vh;
 }
 
 @media (max-width: 780px) {
@@ -251,9 +211,49 @@ header #project-name {
     height: 100%;
     background-color: var(--bgcolor-light);
     color: var(--textcolor);
-    font-size: 100%;
+    font-size: 90%;
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
+}
+
+/***********************************************************
+                        ABOUT PAGE
+********************************************************** */
+
+#project-name a {
+  text-decoration: unset;
+  color: var(--textcolor);
+}
+
+#about-container {
+  width: 99.5vw;
+  height: 80vh;
+  display: grid;
+  justify-content: center;
+  grid-template-rows: 1fr 8fr 4fr;
+  grid-template-columns: 1fr 2fr 1fr;
+}
+
+#about-content {
+  background-color: var(--bgcolor-darkest);
+  /* box-shadow: 0.25vw 0.25vw 0.25vw #222; */
+}
+
+#about-text-area {
+  margin: 6vh 4vw 4vh 4vw;
+  height: 80%;
+  /*background-color: var(--bgcolor-dark);*/
+  color: var(--textcolor);
+  font-size: 1.2rem;
+}
+
+#about-text-area a {
+  text-decoration: unset;
+  color: var(--linkhovercolor);
+}
+
+#about-text-spacer {
+  height: 2vh;
 }
