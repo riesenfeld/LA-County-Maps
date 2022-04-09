@@ -83,34 +83,34 @@ async function asyncBoundaryWrapper() {
     let ages_70_79 = props.ages_70_79
     let ages_80_over = props.ages_80_over
     let ages =
-      "<div> <strong> Ages 0 thru 9:</strong> " +
+      "<div> Ages 0 thru 9: <b>" +
       ages_0_9 +
-      "</div>" +
-      "<div> <strong> Ages 10 thru 19:</strong> " +
+      "</b></div>" +
+      "<div> Ages 10 thru 19: <b>" +
       ages_10_19 +
-      "</div>" +
-      "<div> <strong> Ages 20 thru 29:</strong> " +
+      "</b></div>" +
+      "<div> Ages 20 thru 29: <b>" +
       ages_20_29 +
-      "</div>" +
-      "<div> <strong> Ages 30 thru 39:</strong> " +
+      "</b></div>" +
+      "<div> Ages 30 thru 39: <b>" +
       ages_30_39 +
-      "</div>" +
-      "<div> <strong> Ages 40 thru 49:</strong> " +
+      "</b></div>" +
+      "<div> Ages 40 thru 49: <b>" +
       ages_40_49 +
-      "</div>" +
-      "<div> <strong> Ages 50 thru 59:</strong> " +
+      "</b></div>" +
+      "<div> Ages 50 thru 59: <b>" +
       ages_50_59 +
-      "</div>" +
-      "<div> <strong> Ages 60 thru 69:</strong> " +
+      "</b></div>" +
+      "<div> Ages 60 thru 69: <b>" +
       ages_60_69 +
-      "</div>" +
-      "<div> <strong> Ages 70 thru 79:</strong> " +
+      "</b></div>" +
+      "<div> Ages 70 thru 79: <b>" +
       ages_70_79 +
-      "</div>" +
-      "<div> <strong> Ages 80 and over :</strong> " +
+      "</b></div>" +
+      "<div> Ages 80 and over: <b>" +
       ages_80_over +
-      "</div>"
-    let description = "<h3>Tract number : " + tractNumber + "</h3>" + "<div><strong>Population:</strong> " + population + "</div>" + "<div>" + ages + "</div>"
+      "</b></div>"
+    let description = '<div style="text-decoration: underline">Tract number: <b>' + tractNumber + "</b></div>" + "<div>Population: <b>" + population + "</b></div>" + "<div>" + ages + "</div>"
     console.log("Tract number: " + tractNumber + "\n Population: " + population)
     document.getElementById("content").innerHTML = description
   })
