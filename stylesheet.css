@@ -140,10 +140,13 @@ header a {
   background-color: var(--bgcolor-light);
 }
 
+@media (orientation: portrait) {
+  header {
+    height: 8vh;
+    margin-bottom: 3vh;
+  }
+}
 @media (orientation: portrait) and (max-width: 780px) {
-  /* header {
-    font-size: 90%;
-  } */
   header #project-name {
     font-size: 1.6rem;
   }
@@ -243,6 +246,11 @@ header a {
     font-size: 70%;
   }
 }
+@media (orientation: landscape) and (max-height: 640px) {
+  #content {
+    font-size: 2.5vh;
+  }
+}
 @media (orientation: landscape) and (max-height: 510px) {
   #dropdowns-centering-box {
     height: 90%;
@@ -251,9 +259,6 @@ header a {
   #dropdowns-centering-box div select,
   #dropdowns-centering-box button {
     font-size: 80%;
-  }
-  #content {
-    font-size: 70%;
   }
 }
 @media (orientation: landscape) and (max-height: 400px) {
@@ -285,9 +290,6 @@ header a {
     box-shadow: none;
     margin-top: 5px;
     margin-bottom: -1px;
-  }
-  #content {
-    font-size: 3vh;
   }
 }
 /***********************************************************
